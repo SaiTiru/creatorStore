@@ -1,10 +1,10 @@
 package com.stiru.creatorstore.services;
 
 import com.stiru.creatorstore.entites.Product;
+import com.stiru.creatorstore.exceptions.ResourceNotFoundException;
 import com.stiru.creatorstore.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct( Long id, Product product){
+    public Product updateProduct(Long id, Product product) {
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
@@ -31,17 +31,19 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
-    public List<Product> getProducts(){
+    public List<Product> getProducts() {
         return productRepository.findAll();
     }
 
-    public Product getProductById(Long id){
+    public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
-    public void deleteProduct(Long id){
-        productRepository.deleteById(id);
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        productRepository.delete(product);
     }
 }
 
