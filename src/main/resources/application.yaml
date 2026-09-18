@@ -11,6 +11,7 @@ spring:
   #ORM hibernate configuration
 
   jpa:
+    database-platform:
     hibernate:
       ddl-auto: update
     show-sql: true
